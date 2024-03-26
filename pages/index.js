@@ -78,5 +78,18 @@ export default function Home() {
     );
   }
 
-  return <button onClick={connect}></button>;
+  return (
+    <div className="home">
+      <Image
+        src="Trust_Core Logo_Blue.svg" // Path to your image
+        alt="Description of the image"
+        width={500} // Width of the image
+        height={300} // Height of the image
+      />
+      <button onClick={connect} className="wallet-connect-button">
+        {" "}
+        Connect
+      </button>
+    </div>
+  );
 }

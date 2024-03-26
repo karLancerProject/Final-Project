@@ -5,7 +5,6 @@ import styles from "@/styles/Home.module.css";
 const inter = Inter({ subsets: ["latin"] });
 
 import Web3Modal from "web3modal";
-import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -20,24 +19,12 @@ const providerOptions = {
   },
 };
 
-if (typeof window !== "undefined") {
-  web3Modal = new Web3Modal({
-    cacheProvider: false,
-    providerOptions, // required
-  });
-}
+web3Modal = new Web3Modal({
+  cacheProvider: false,
+  providerOptions, // required
+});
 
 export default function Home() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [hasMetamask, setHasMetamask] = useState(false);
-  const [signer, setSigner] = useState(undefined);
-
-  useEffect(() => {
-    if (typeof window.ethereum !== "undefined") {
-      setHasMetamask(true);
-    }
-  });
-
   async function connect() {
     try {
       const web3ModalProvider = await web3Modal.connect();
@@ -49,5 +36,5 @@ export default function Home() {
     }
   }
 
-  return <button onClick={connect}></button>;
+  return <button onClick={connect}>Connect</button>;
 }

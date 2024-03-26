@@ -53,21 +53,5 @@ export default function Home() {
     }
   }
 
-  
-
-  return (
-    <div>
-      {" "}
-      {hasMetamask ? (
-        isConnected ? (
-          "Connected! "
-        ) : (
-          <button onClick={() => connect()}>Connect</button>
-        )
-      ) : (
-        "Please install metamask"
-      )}
-      {isConnected ? <button onClick={() => execute()}>Execute</button> : ""}
-    </div>
-  );
+  return <button onClick={connect}></button>;
 }

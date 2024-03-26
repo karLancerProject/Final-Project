@@ -15,7 +15,7 @@ const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider, // required
     options: {
-      rpc: { 42: process.env.NEXT_PUBLIC_RPC_URL }, // required
+      rpc: { 1: process.env.NEXT_PUBLIC_RPC_URL }, // required
     },
   },
 };

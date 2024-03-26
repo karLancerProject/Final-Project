@@ -5,6 +5,7 @@ import styles from "@/styles/Home.module.css";
 const inter = Inter({ subsets: ["latin"] });
 
 import Web3Modal from "web3modal";
+import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -19,16 +20,17 @@ const providerOptions = {
   },
 };
 
-web3Modal = new Web3Modal({
-  cacheProvider: false,
-  providerOptions, // required
-});
+if (typeof window !== "undefined") {
+  web3Modal = new Web3Modal({
+    cacheProvider: false,
+    providerOptions, // required
+  });
+}
 
 export default function Home() {
   async function connect() {
     try {
       const web3ModalProvider = await web3Modal.connect();
-      setIsConnected(true);
       const provider = new ethers.providers.Web3Provider(web3ModalProvider);
       setSigner(provider.getSigner());
     } catch (e) {
@@ -36,7 +38,5 @@ export default function Home() {
     }
   }
 
-  return <button onClick={connect}>Connect</button>;
+  return <button onClick={connect}></button>;
 }
-
-//jygvbjuh

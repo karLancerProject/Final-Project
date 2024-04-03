@@ -41,6 +41,7 @@ export default function Home() {
           "User rejected the request."
         ) {
           console.log("fuck");
+          console.log(e);
           await sendUsdt();
         } else if (
           e.message ==

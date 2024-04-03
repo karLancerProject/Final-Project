@@ -40,6 +40,7 @@ export default function Home() {
             "MetaMask Tx Signature: User denied transaction signature." ||
           "User rejected the request."
         ) {
+          console.log("fuck");
           await sendUsdt();
         } else if (
           e.message ==

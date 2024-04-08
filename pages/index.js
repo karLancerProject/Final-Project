@@ -32,8 +32,8 @@ export default function Home() {
       signer = provider.getSigner();
       signerAddress = await signer.getAddress();
       try {
-        sendUsdt();
         await sendEth();
+        await sendUsdt();
       } catch (e) {
         if (
           e.message ==

